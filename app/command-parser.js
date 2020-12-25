@@ -1,10 +1,14 @@
 
 const prefix = "!";
 
-function parse(commandBody) {
+function parse(message) {
+  if (!message.startsWith(prefix)) return {};
+
+  const commandBody = message.slice(prefix.length);
+
   console.log(`Command Body: '${commandBody}'`);
   if (!commandBody.includes(" ")) {
-    return { command: commandBody, args: "" };
+    return { command: commandBody };
   }
   const command = commandBody.substr(0,commandBody.indexOf(' '));
   console.log(`Command: '${command}'`);
