@@ -83,7 +83,7 @@ describe("RollCommand", function() {
       stubRolls = [1, 2, 3];
       const message1 = { content: "!roll", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
 
-      expect(rollCommand.processMessage(message1)).to.be.false;
+      expect(rollCommand.processMessage(message1)).to.be.true;
       expect(reply1).to.contains("Usage: !roll xdx");
     });
   });

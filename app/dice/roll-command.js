@@ -31,7 +31,7 @@ function processMessage(message) {
   if (!body) {
     log.debug("No body provided, showing help");
     message.channel.send(createHelpMessage());
-    return false;
+    return true;
   }
   log.debug("body: " + body);
   const tokens = diceRoller.tokenize(body);
