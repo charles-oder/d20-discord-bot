@@ -10,9 +10,9 @@ function createHelpMessage() {
   msg += "\t\t\"fumble:0\" Sets roll for fumbles (0 disables)\n";
   msg += "Examples:\n";
   msg += "\t\t\"!attack +1\" Rolls a single attack with a +1 bonus\n";
-  msg += "\t\t\"!roll +6/+1/+6\" Rolls 3 attacks\n";
-  msg += "\t\t\"!roll +6/+1 crit:19\" Rolls 2 attacks with a critical threat of 19-20\n";
-  msg += "\t\t\"!roll +6/+1 crit:19 fumble:0\" Rolls 2 attacks with a critical threat of 19-20 and no fumble on natural 1s\n";
+  msg += "\t\t\"!attack +6/+1/+6\" Rolls 3 attacks\n";
+  msg += "\t\t\"!attack +6/+1 crit:19\" Rolls 2 attacks with a critical threat of 19-20\n";
+  msg += "\t\t\"!attack +6/+1 crit:19 fumble:0\" Rolls 2 attacks with a critical threat of 19-20 and no fumble on natural 1s\n";
   return msg;
 }
 const history = {}
