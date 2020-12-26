@@ -17,6 +17,39 @@ function createHelpMessage() {
 }
 const history = {}
 
+function extractCritThreat(args) {
+  let output;
+  args.forEach(arg => {
+    const components = arg.split(":");
+    if (components[0] === "crit") {
+      if (components[1]) {
+        output = parseInt(components[1]);
+      }
+    }
+  });
+  if (!output) {
+    output = 20;
+  }
+  return output;
+}
+
+function extractFumbleRange(args) {
+  let output;
+  args.forEach(arg => {
+    const components = arg.split(":");
+    if (components[0] === "fumble") {
+      log.debug("Fumble comp: " + JSON.stringify(components));
+      if (components[1] || components[1] === 0) {
+        output = parseInt(components[1]);
+      }
+    }
+  });
+  if (!output && output !== 0) {
+    output = 1;
+  }
+  return output;
+}
+
 function processMessage(message) {
   if (!message.content.startsWith(prefix)) return false;
   log.debug(message.content);
@@ -42,8 +75,10 @@ function processMessage(message) {
   const resultSets = [];
   const attackString = tokens.shift();
   const attacks = attackString.split("/");
-  const critThreat = 20;
-  const fumbleThreat = 1;
+  const critThreat = extractCritThreat(tokens);
+  log.debug("Crit Threat: " + critThreat);
+  const fumbleThreat = extractFumbleRange(tokens);
+  log.debug("Fumble Threat: " + fumbleThreat);
   let total = 0;
   let response = "";
   attacks.forEach(attackBonus => {

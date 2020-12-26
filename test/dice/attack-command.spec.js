@@ -71,5 +71,25 @@ describe("AttackCommand", function() {
       expected += "user attacks! Roll: 1 + 1 = **2**, *Fumble* Backup Roll: 12 + 1 = **13**\n"
       expect(reply).to.equals(expected);
     });
+    it("full with natural 19 crit threat", function() {
+      const message = { content: "!attack +6/+1 crit:19", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
+      stubRolls = [10, 19, 12]
+      const response = attackCommand.processMessage(message);
+
+      assert.strictEqual(response, true);
+      let expected = "user attacks! Roll: 10 + 6 = **16**\n"
+      expected += "user attacks! Roll: 19 + 1 = **20**, *Critical Threat* Backup Roll: 12 + 1 = **13**\n"
+      expect(reply).to.equals(expected);
+    });
+    it("full with fumble disabled", function() {
+      const message = { content: "!attack +6/+1 fumble:0", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
+      stubRolls = [10, 1]
+      const response = attackCommand.processMessage(message);
+
+      assert.strictEqual(response, true);
+      let expected = "user attacks! Roll: 10 + 6 = **16**\n"
+      expected += "user attacks! Roll: 1 + 1 = **2**\n"
+      expect(reply).to.equals(expected);
+    });
   });
 });
