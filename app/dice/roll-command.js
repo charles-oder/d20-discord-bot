@@ -19,7 +19,7 @@ function processMessage(message) {
     message.reply(createHelpMessage());
     return false;
   }
-  const author = message.author.username;
+  const author = message.member.nickname;
   const body = message.content.replace(prefix, "");
   log.debug("body: " + body);
   const tokens = diceRoller.tokenize(body);
