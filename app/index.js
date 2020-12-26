@@ -7,9 +7,13 @@ const rollCommand = require("./dice/roll-command.js");
 const client = new Discord.Client();
 
 client.on("message", function(message) {
-  if (message.author.bot) return;
-  if (rollCommand.processMessage(message)) {
-    message.delete();
+  try {
+    if (message.author.bot) return;
+    if (rollCommand.processMessage(message)) {
+      message.delete();
+    }
+  } catch(error) {
+    console.log(error);
   }
 });
 
