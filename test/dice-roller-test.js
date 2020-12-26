@@ -43,6 +43,13 @@ describe("DiceRoller", function() {
     });
   });
   describe("createDice", function() {
+    it("5 returns 5", function() {
+      const token = "5";
+      const dice = diceRoller.createDice(token);
+
+      assert.deepStrictEqual(dice.dice, [5]);
+      assert.deepStrictEqual(dice.mods, []);
+    });
     it("1d10 returns single d10", function() {
       const token = "1d10";
       const dice = diceRoller.createDice(token);

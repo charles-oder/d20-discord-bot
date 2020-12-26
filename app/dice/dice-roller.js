@@ -26,12 +26,14 @@ function createDice(token) {
     diceString = keepLow[0];
   }
 
-  const components = diceString.split("d");
-  const count = components[0];
-  const sides = components[1];
-  const dice = Array(parseInt(count)).fill("d" + sides);
-  
-  return { dice: dice, mods: mods };
+  if (diceString.includes("d")) {
+    const components = diceString.split("d");
+    const count = components[0];
+    const sides = components[1];
+    const dice = Array(parseInt(count)).fill("d" + sides);
+    return { dice: dice, mods: mods };
+  }
+  return {dice: [parseInt(diceString)], mods: mods };
 }
 
 function roll(sides) {
