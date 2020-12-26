@@ -1,5 +1,6 @@
+const include = require("./include.js");
+const commandParser = include.include("app/command-parser.js")
 var assert = require('assert');
-var commandParser = require("../app/command-parser.js");
 
 describe("Command Parser", function() {
   it("'!ping' without space returns ping command with no args", function() {

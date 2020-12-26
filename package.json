@@ -4,7 +4,7 @@
   "description": "d20 discord bot",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha \"test/**/*.spec.js\""
   },
   "repository": {
     "type": "git",

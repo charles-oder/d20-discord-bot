@@ -1,7 +1,8 @@
+const include = require("../include.js");
 var assert = require("assert");
 const chai = require("chai");
 const expect = chai.expect;
-var diceRoller = require("../app/dice/dice-roller.js");
+var diceRoller = include.include("app/dice/dice-roller.js");
 
 describe("DiceRoller", function() {
   describe("tokenize", function() {

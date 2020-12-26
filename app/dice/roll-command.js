@@ -1,4 +1,4 @@
-const diceRoller = require("./dice-roller.js");
+const diceRoller = require.main.require("./dice-roller.js");
 const log = require("../log.js");
 
 const prefix = "!roll";
