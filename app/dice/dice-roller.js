@@ -43,7 +43,7 @@ function roll(sides) {
 function rollString(str) {
   if (str.startsWith('d')) {
     const sides = parseInt(str.replace("d", ""));
-    return roll(sides);
+    return module.exports.roll(sides);
   }
   return parseInt(str);
 }
@@ -51,3 +51,4 @@ function rollString(str) {
 module.exports.tokenize = tokenize;
 module.exports.createDice = createDice;
 module.exports.rollString = rollString;
+module.exports.roll = roll;

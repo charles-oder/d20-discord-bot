@@ -1,7 +1,7 @@
-const diceRoller = require.main.require("./dice-roller.js");
+var diceRoller = require("./dice-roller.js");
 const log = require("../log.js");
 
-const prefix = "!roll";
+const prefix = "!roll ";
 
 function createHelpMessage() {
   let msg = "Usage: !roll xdx [+xdx] [+x]\n";
@@ -46,3 +46,4 @@ function processMessage(message) {
 }
 
 module.exports.processMessage = processMessage;
+module.exports.diceRoller = diceRoller;
