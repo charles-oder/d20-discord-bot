@@ -21,5 +21,5 @@ fi
 if [[ $1 == "start" ]]; then
   kill_app
   echo "starting bot"
-  node $PROCESS_NAME >> $LOG_FILE&
+  node $PROCESS_NAME&
 fi

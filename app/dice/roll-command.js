@@ -1,4 +1,5 @@
 const diceRoller = require("./dice-roller.js");
+const log = require("../log.js");
 
 const prefix = "!roll";
 
@@ -12,20 +13,21 @@ function createHelpMessage() {
 
 function processMessage(message) {
   if (!message.content.startsWith(prefix)) return false;
+  log.debug(message.content);
   if (message.content.includes("help")) {
     message.reply(createHelpMessage());
     return false;
   }
   const author = message.author.username;
   const body = message.content.replace(prefix, "");
-  console.log("body: " + body);
+  log.debug("body: " + body);
   const tokens = diceRoller.tokenize(body);
-  console.log("tokens: " + JSON.stringify(tokens));
+  log.debug("tokens: " + JSON.stringify(tokens));
   const resultSets = [];
   let total = 0;
   tokens.forEach(token => {
     const dice = diceRoller.createDice(token);
-    console.log("dice: " + JSON.stringify(dice));
+    log.debug("dice: " + JSON.stringify(dice));
     const results = [];
     dice.dice.forEach(die => {
       const roll = diceRoller.rollString(die);

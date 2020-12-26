@@ -3,6 +3,7 @@ const config = require("../config.json");
 const commandParser = require("./command-parser.js");
 const ping = require("./ping.js");
 const rollCommand = require("./dice/roll-command.js");
+const log = require("./log.js");
 
 const client = new Discord.Client();
 
@@ -13,7 +14,7 @@ client.on("message", function(message) {
       message.delete();
     }
   } catch(error) {
-    console.log(error);
+    log.error(error);
   }
 });
 
