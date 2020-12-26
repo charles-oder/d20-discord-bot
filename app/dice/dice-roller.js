@@ -33,7 +33,7 @@ function createDice(token) {
     const dice = Array(parseInt(count)).fill("d" + sides);
     return { dice: dice, mods: mods };
   }
-  return {dice: [parseInt(diceString)], mods: mods };
+  return {dice: [diceString], mods: mods };
 }
 
 function roll(sides) {
