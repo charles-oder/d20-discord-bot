@@ -1,4 +1,6 @@
-var assert = require('assert');
+var assert = require("assert");
+const chai = require("chai");
+const expect = chai.expect;
 var diceRoller = require("../app/dice/dice-roller.js");
 
 describe("DiceRoller", function() {
@@ -68,6 +70,67 @@ describe("DiceRoller", function() {
 
       assert.deepStrictEqual(["d6", "d6", "d6", "d6", "d6"], dice.dice);
       assert.deepStrictEqual(dice.mods, ["low-3"]);
+    });
+  });
+  describe("rollString", function() {
+    it("2 returns 2", function() {
+      const die = "2";
+      const roll = diceRoller.rollString(die);
+
+      assert.deepStrictEqual(roll, 2);
+    });
+    it("d6 always rolls 1-6", () => {
+      for (let i = 0; i < 100; i++) {
+        const actualValue = diceRoller.rollString("d6");
+
+        expect(actualValue >= 1);
+        expect(actualValue <= 6);
+      }
+    });
+    it("d6 rolls variety of 1-6", () => {
+      const counts = new Array(6).fill(0);
+
+      let maxRoll = 0;
+      let minRoll = 20;
+      for (let i = 0; i < 1000000; i++) {
+        const actualValue = diceRoller.rollString("d6");
+        maxRoll = Math.max(maxRoll, actualValue);
+        minRoll = Math.min(minRoll, actualValue);
+        counts[actualValue - 1]++;
+      }
+      let maxCount = 0;
+      let minCount = Number.MAX_SAFE_INTEGER;
+      counts.forEach(e => {
+        maxCount = Math.max(maxCount, e);
+        minCount = Math.min(minCount, e);
+      });
+      expect(maxRoll).to.equal(6);
+      expect(minRoll).to.equal(1);
+      expect(maxCount / minCount).to.lessThan(1.03);
+      expect(maxCount / minCount).to.greaterThan(0.98);
+    });
+    it("d20 rolls variety of 1-20", () => {
+      const counts = new Array(20).fill(0);
+
+      let maxRoll = 0;
+      let minRoll = 20;
+      for (let i = 0; i < 1000000; i++) {
+        const actualValue = diceRoller.rollString("d20");
+        maxRoll = Math.max(maxRoll, actualValue);
+        minRoll = Math.min(minRoll, actualValue);
+        counts[actualValue - 1]++;
+      }
+      let maxCount = 0;
+      let minCount = Number.MAX_SAFE_INTEGER;
+
+      counts.forEach(e => {
+        maxCount = Math.max(maxCount, e);
+        minCount = Math.min(minCount, e);
+      });
+      expect(maxRoll).to.equal(20);
+      expect(minRoll).to.equal(1);
+      expect(maxCount / minCount).to.lessThan(1.03);
+      expect(maxCount / minCount).to.greaterThan(0.98);
     });
   });
 });
