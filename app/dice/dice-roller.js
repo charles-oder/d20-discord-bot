@@ -11,18 +11,18 @@ function tokenize(dieString) {
   // -<anything> // subtract value
 }
 function createDice(token) {
-  let keep = "all";
   let diceString = token;
+  const  mods = []
 
   const keepHigh = token.split("h");
   if (keepHigh[1]) {
-    keep = "high-" + keepHigh[1];
+    mods.push("high-" + keepHigh[1]);
     diceString = keepHigh[0];
   }
 
   const keepLow = token.split("l");
   if (keepLow[1]) {
-    keep = "low-" + keepLow[1];
+    mods.push("low-" + keepLow[1]);
     diceString = keepLow[0];
   }
 
@@ -31,7 +31,7 @@ function createDice(token) {
   const sides = components[1];
   const dice = Array(parseInt(count)).fill("d" + sides);
   
-  return { dice: dice, keep: keep };
+  return { dice: dice, mods: mods };
 }
 
 module.exports.tokenize = tokenize;
