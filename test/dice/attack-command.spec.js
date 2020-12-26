@@ -91,5 +91,42 @@ describe("AttackCommand", function() {
       expected += "user attacks! Roll: 1 + 1 = **2**\n"
       expect(reply).to.equals(expected);
     });
+    it("No argument repeats last command", function() {
+      let reply1 = ""
+      let reply2 = ""
+      stubRolls = [10, 12];
+      const message1 = { content: "!attack +1", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message2 = { content: "!attack", member: { displayName: "user" }, channel: { send: function(msg){ reply2 = msg } } };
+
+      expect(attackCommand.processMessage(message1)).to.be.true;
+      expect(attackCommand.processMessage(message2)).to.be.true;
+      expect(reply1).equals("user attacks! Roll: 10 + 1 = **11**\n");
+      expect(reply2).equals("user attacks! Roll: 12 + 1 = **13**\n");
+    });
+    it("No argument repeat is user specific last command", function() {
+      let reply1 = ""
+      let reply2 = ""
+      let reply3 = ""
+      stubRolls = [11, 12, 13];
+      const message1 = { content: "!attack +1", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message2 = { content: "!attack +2", member: { displayName: "other-user" }, channel: { send: function(msg){ reply2 = msg } } };
+      const message3 = { content: "!attack", member: { displayName: "user" }, channel: { send: function(msg){ reply3 = msg } } };
+
+      expect(attackCommand.processMessage(message1)).to.be.true;
+      expect(attackCommand.processMessage(message2)).to.be.true;
+      expect(attackCommand.processMessage(message3)).to.be.true;
+      expect(reply1).equals("user attacks! Roll: 11 + 1 = **12**\n");
+      expect(reply2).equals("other-user attacks! Roll: 12 + 2 = **14**\n");
+      expect(reply3).equals("user attacks! Roll: 13 + 1 = **14**\n");
+    });
+    it("No argument with no history returns help command", function() {
+      let reply1 = ""
+      stubRolls = [11, 12, 13];
+      const message1 = { content: "!attack", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
+
+      expect(attackCommand.processMessage(message1)).to.be.true;
+      expect(reply1).to.contains("Usage: !attack +x/+x... [options]");
+    });
+
   });
 });

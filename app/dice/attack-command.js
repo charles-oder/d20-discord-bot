@@ -60,15 +60,15 @@ function processMessage(message) {
   const author = message.member.displayName;
   log.debug("User: " + author);
   let body = message.content.replace(prefix, "").trim();
-  // if (!body) {
-  //   log.debug("no body provided, loading last roll");
-  //   body = module.exports.history[author];
-  // }
-  // if (!body) {
-  //   log.debug("No body provided, showing help");
-  //   message.channel.send(createHelpMessage());
-  //   return true;
-  // }
+  if (!body) {
+    log.debug("no body provided, loading last roll");
+    body = module.exports.history[author];
+  }
+  if (!body) {
+    log.debug("No body provided, showing help");
+    message.channel.send(createHelpMessage());
+    return true;
+  }
   log.debug("body: " + body);
   const tokens = body.split(" ");
   log.debug("tokens: " + JSON.stringify(tokens));
