@@ -16,10 +16,10 @@ function processMessage(message) {
   if (!message.content.startsWith(prefix)) return false;
   log.debug(message.content);
   if (message.content.includes("help")) {
-    message.reply(createHelpMessage());
+    message.channel.send(createHelpMessage());
     return false;
   }
-  const author = message.member.nickname;
+  const author = message.member.displayName;
   const body = message.content.replace(prefix, "");
   log.debug("body: " + body);
   const tokens = diceRoller.tokenize(body);
@@ -42,7 +42,7 @@ function processMessage(message) {
     response += JSON.stringify(set);
   });
   response += ` = **${total}**`;
-  message.reply(response);
+  message.channel.send(response);
   return true;
 }
 

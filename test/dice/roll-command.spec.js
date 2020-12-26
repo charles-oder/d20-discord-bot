@@ -25,7 +25,7 @@ describe("RollCommand", function() {
     });
     it("does not handle message with help command", function() {
       let reply = ""
-      const message = { content: "!roll help", member: { nickname: "user" }, reply: function(msg){ reply = msg } };
+      const message = { content: "!roll help", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       const response = rollCommand.processMessage(message);
 
       assert.strictEqual(response, false);
@@ -34,7 +34,7 @@ describe("RollCommand", function() {
     it("handles message with command", function() {
       let reply = ""
       stubRolls = [4];
-      const message = { content: "!roll 1d10", member: { nickname: "user" }, reply: function(msg){ reply = msg } };
+      const message = { content: "!roll 1d10", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       const response = rollCommand.processMessage(message);
 
       assert.strictEqual(response, true);
@@ -43,7 +43,7 @@ describe("RollCommand", function() {
     it("handles complex message with command", function() {
       let reply = ""
       stubRolls = [1, 2, 3];
-      const message = { content: "!roll 1d10 + 2d6 + 2", member: { nickname: "user" }, reply: function(msg){ reply = msg } };
+      const message = { content: "!roll 1d10 + 2d6 + 2", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       const response = rollCommand.processMessage(message);
 
       assert.strictEqual(response, true);
