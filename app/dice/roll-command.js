@@ -5,9 +5,10 @@ const prefix = "!roll ";
 
 function createHelpMessage() {
   let msg = "Usage: !roll xdx [+xdx] [+x]\n";
-  msg += "  Examples: !roll 3d6\n";
-  msg += "            !roll 1d20 + 5\n";
-  msg += "            !roll 1d8 + 2d6 + 5\n";
+  msg += "Examples:";
+  msg += "\t\t!roll 3d6\n";
+  msg += "\t\t!roll 1d20 + 5\n";
+  msg += "\t\t!roll 1d8 + 2d6 + 5\n";
   return msg;
 }
 

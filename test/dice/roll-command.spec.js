@@ -23,6 +23,14 @@ describe("RollCommand", function() {
 
       assert.strictEqual(response, false);
     });
+    it("does not handle message with help command", function() {
+      let reply = ""
+      const message = { content: "!roll help", author: { username: "user" }, reply: function(msg){ reply = msg } };
+      const response = rollCommand.processMessage(message);
+
+      assert.strictEqual(response, false);
+      expect(reply).to.contains("Usage: !roll xdx");
+    });
     it("handles message with command", function() {
       let reply = ""
       stubRolls = [4];
