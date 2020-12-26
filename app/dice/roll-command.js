@@ -41,7 +41,7 @@ function processMessage(message) {
   resultSets.forEach(set => {
     response += JSON.stringify(set);
   });
-  response += ` = ${total}`;
+  response += ` = **${total}**`;
   message.reply(response);
   return true;
 }

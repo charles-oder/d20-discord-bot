@@ -38,7 +38,7 @@ describe("RollCommand", function() {
       const response = rollCommand.processMessage(message);
 
       assert.strictEqual(response, true);
-      expect(reply).equals("user rolls 1d10: [4] = 4");
+      expect(reply).equals("user rolls 1d10: [4] = **4**");
     });
     it("handles complex message with command", function() {
       let reply = ""
@@ -47,7 +47,7 @@ describe("RollCommand", function() {
       const response = rollCommand.processMessage(message);
 
       assert.strictEqual(response, true);
-      expect(reply).equals("user rolls 1d10 + 2d6 + 2: [1][2,3][2] = 8");
+      expect(reply).equals("user rolls 1d10 + 2d6 + 2: [1][2,3][2] = **8**");
     });
   });
 });
