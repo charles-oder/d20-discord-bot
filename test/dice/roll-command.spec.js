@@ -54,8 +54,8 @@ describe("RollCommand", function() {
       let reply1 = ""
       let reply2 = ""
       stubRolls = [1, 2];
-      const message1 = { content: "!roll 1d6", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
-      const message2 = { content: "!roll", member: { displayName: "user" }, channel: { send: function(msg){ reply2 = msg } } };
+      const message1 = { content: "!roll 1d6", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message2 = { content: "!roll", member: { displayName: "user" , id: "1"}, channel: { send: function(msg){ reply2 = msg } } };
 
       expect(rollCommand.processMessage(message1)).to.be.true;
       expect(rollCommand.processMessage(message2)).to.be.true;
@@ -67,9 +67,9 @@ describe("RollCommand", function() {
       let reply2 = ""
       let reply3 = ""
       stubRolls = [1, 2, 3];
-      const message1 = { content: "!roll 1d6", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
-      const message2 = { content: "!roll 1d8", member: { displayName: "other-user" }, channel: { send: function(msg){ reply2 = msg } } };
-      const message3 = { content: "!roll", member: { displayName: "user" }, channel: { send: function(msg){ reply3 = msg } } };
+      const message1 = { content: "!roll 1d6", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message2 = { content: "!roll 1d8", member: { displayName: "other-user", id: "2" }, channel: { send: function(msg){ reply2 = msg } } };
+      const message3 = { content: "!roll", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply3 = msg } } };
 
       expect(rollCommand.processMessage(message1)).to.be.true;
       expect(rollCommand.processMessage(message2)).to.be.true;
@@ -81,7 +81,7 @@ describe("RollCommand", function() {
     it("No argument with no history returns help command", function() {
       let reply1 = ""
       stubRolls = [1, 2, 3];
-      const message1 = { content: "!roll", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message1 = { content: "!roll", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
 
       expect(rollCommand.processMessage(message1)).to.be.true;
       expect(reply1).to.contains("Usage: !roll xdx");

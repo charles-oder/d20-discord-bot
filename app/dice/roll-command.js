@@ -22,11 +22,12 @@ function processMessage(message) {
     return false;
   }
   const author = message.member.displayName;
-  log.debug("User: " + author);
+  const authorId = message.member.id;
+  log.debug(`User: ${author} (${authorId})`);
   let body = message.content.replace(prefix, "").trim();
   if (!body) {
     log.debug("no body provided, loading last roll");
-    body = module.exports.history[author];
+    body = module.exports.history[authorId];
   }
   if (!body) {
     log.debug("No body provided, showing help");
@@ -54,8 +55,8 @@ function processMessage(message) {
     response += JSON.stringify(set);
   });
   response += ` = **${total}**`;
-  log.debug("Setting history for " + author + ": " + body);
-  module.exports.history[author] = body;
+  log.debug("Setting history for " + authorId + ": " + body);
+  module.exports.history[authorId] = body;
   message.channel.send(response);
   return true;
 }

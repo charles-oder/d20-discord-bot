@@ -95,8 +95,8 @@ describe("AttackCommand", function() {
       let reply1 = ""
       let reply2 = ""
       stubRolls = [10, 12];
-      const message1 = { content: "!attack +1", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
-      const message2 = { content: "!attack", member: { displayName: "user" }, channel: { send: function(msg){ reply2 = msg } } };
+      const message1 = { content: "!attack +1", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message2 = { content: "!attack", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply2 = msg } } };
 
       expect(attackCommand.processMessage(message1)).to.be.true;
       expect(attackCommand.processMessage(message2)).to.be.true;
@@ -108,9 +108,9 @@ describe("AttackCommand", function() {
       let reply2 = ""
       let reply3 = ""
       stubRolls = [11, 12, 13];
-      const message1 = { content: "!attack +1", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
-      const message2 = { content: "!attack +2", member: { displayName: "other-user" }, channel: { send: function(msg){ reply2 = msg } } };
-      const message3 = { content: "!attack", member: { displayName: "user" }, channel: { send: function(msg){ reply3 = msg } } };
+      const message1 = { content: "!attack +1", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message2 = { content: "!attack +2", member: { displayName: "other-user", id: "2" }, channel: { send: function(msg){ reply2 = msg } } };
+      const message3 = { content: "!attack", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply3 = msg } } };
 
       expect(attackCommand.processMessage(message1)).to.be.true;
       expect(attackCommand.processMessage(message2)).to.be.true;
@@ -122,7 +122,7 @@ describe("AttackCommand", function() {
     it("No argument with no history returns help command", function() {
       let reply1 = ""
       stubRolls = [11, 12, 13];
-      const message1 = { content: "!attack", member: { displayName: "user" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message1 = { content: "!attack", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
 
       expect(attackCommand.processMessage(message1)).to.be.true;
       expect(reply1).to.contains("Usage: !attack +x/+x... [options]");
