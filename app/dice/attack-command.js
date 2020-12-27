@@ -52,7 +52,8 @@ function extractFumbleRange(args) {
 
 function processMessage(message) {
   if (!message.content.startsWith(prefix)) return false;
-  log.debug(message.content);
+  log.debug("Channel: " + message.channel.id)
+  log.debug("Message: " + message.content);
   if (message.content.includes("help")) {
     message.channel.send(createHelpMessage());
     return false;
