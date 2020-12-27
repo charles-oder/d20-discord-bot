@@ -1,5 +1,6 @@
 var diceRoller = require("./dice-roller.js");
 const log = require("../log.js");
+const docManager = require("../persistance/doc-manager.js");
 
 const prefix = "!attack";
 
@@ -15,7 +16,6 @@ function createHelpMessage() {
   msg += "\t\t\"!attack +6/+1 crit:19 fumble:0\" Rolls 2 attacks with a critical threat of 19-20 and no fumble on natural 1s\n";
   return msg;
 }
-const history = {}
 
 function extractCritThreat(args) {
   let output;
@@ -59,11 +59,13 @@ function processMessage(message) {
   }
   const author = message.member.displayName;
   const authorId = message.member.id;
-  log.debug("User: " + author);
+  log.debug(`User: ${author} (${authorId})`);
+  const userData = docManager.loadDocument(authorId);
+  log.debug("User Data: " + JSON.stringify(userData));
   let body = message.content.replace(prefix, "").trim();
   if (!body) {
     log.debug("no body provided, loading last roll");
-    body = module.exports.history[authorId];
+    body = userData.lastAttack;
   }
   if (!body) {
     log.debug("No body provided, showing help");
@@ -103,11 +105,11 @@ function processMessage(message) {
 
   });
   log.debug("Setting history for " + authorId + ": " + body);
-  module.exports.history[authorId] = body;
+  userData.lastAttack = body;
+  docManager.saveDocument(authorId, userData);
   message.channel.send(response);
   return true;
 }
 
 module.exports.processMessage = processMessage;
 module.exports.diceRoller = diceRoller;
-module.exports.history = history;

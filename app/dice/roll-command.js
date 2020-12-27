@@ -1,5 +1,6 @@
 var diceRoller = require("./dice-roller.js");
 const log = require("../log.js");
+const docManager = require("../persistance/doc-manager.js");
 
 const prefix = "!roll";
 
@@ -12,7 +13,6 @@ function createHelpMessage() {
   msg += "\t\t\"!roll\" Repeats the last roll\n";
   return msg;
 }
-const history = {}
 
 function processMessage(message) {
   if (!message.content.startsWith(prefix)) return false;
@@ -24,10 +24,12 @@ function processMessage(message) {
   const author = message.member.displayName;
   const authorId = message.member.id;
   log.debug(`User: ${author} (${authorId})`);
+  const userData = docManager.loadDocument(authorId);
+  log.debug("User Data: " + JSON.stringify(userData));
   let body = message.content.replace(prefix, "").trim();
   if (!body) {
     log.debug("no body provided, loading last roll");
-    body = module.exports.history[authorId];
+    body = userData.lastRoll
   }
   if (!body) {
     log.debug("No body provided, showing help");
@@ -56,11 +58,11 @@ function processMessage(message) {
   });
   response += ` = **${total}**`;
   log.debug("Setting history for " + authorId + ": " + body);
-  module.exports.history[authorId] = body;
+  userData.lastRoll = body;
+  docManager.saveDocument(authorId, userData);
   message.channel.send(response);
   return true;
 }
 
 module.exports.processMessage = processMessage;
 module.exports.diceRoller = diceRoller;
-module.exports.history = history;

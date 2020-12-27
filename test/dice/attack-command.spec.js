@@ -5,6 +5,8 @@ var attackCommand = require("../../app/dice/attack-command.js");
 var diceRoller = require("../../app/dice/dice-roller.js");
 const sinon = require("sinon");
 let stubRolls = [];
+const fs = require("fs");
+const docManager = require("../../app/persistance/doc-manager.js");
 
 describe("AttackCommand", function() {
   describe("processMessage()", function() {
@@ -16,7 +18,13 @@ describe("AttackCommand", function() {
     afterEach(function() {
       stubRolls = [];
       diceRoller.roll.restore();
-      attackCommand.history = {};
+      const files = fs.readdirSync(docManager.storageDir);
+      files.forEach(file => {
+        if (fs.existsSync(docManager.storageDir + "/" + file)) {
+          fs.unlinkSync(docManager.storageDir + "/" + file);
+        }
+      });
+    
     });
     it("does not handle message witout command", function() {
       const message = { content: "monkey", author: "user" };

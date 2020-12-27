@@ -4,7 +4,9 @@ const expect = chai.expect;
 var rollCommand = require("../../app/dice/roll-command.js");
 var diceRoller = require("../../app/dice/dice-roller.js");
 const sinon = require("sinon");
+const fs = require("fs");
 let stubRolls = [];
+const docManager = require("../../app/persistance/doc-manager.js");
 
 describe("RollCommand", function() {
   describe("processMessage()", function() {
@@ -16,7 +18,12 @@ describe("RollCommand", function() {
     afterEach(function() {
       stubRolls = [];
       diceRoller.roll.restore();
-      rollCommand.history = {};
+      const files = fs.readdirSync(docManager.storageDir);
+      files.forEach(file => {
+        if (fs.existsSync(docManager.storageDir + "/" + file)) {
+          fs.unlinkSync(docManager.storageDir + "/" + file);
+        }
+      });
     });
     it("does not handle message witout command", function() {
       const message = { content: "1d10", author: "user" };
