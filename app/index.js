@@ -9,12 +9,23 @@ const client = new Discord.Client();
 client.on("message", function(message) {
   try {
     if (message.author.bot) return;
-    if (rollCommand.processMessage(message)) {
-      message.delete();
-    }
-    if (attackCommand.processMessage(message)) {
-      message.delete();
-    }
+    let commands = [
+      rollCommand,
+      attackCommand
+    ];
+    commands.forEach(command => {
+      let response = command.processMessage(message);
+      if (response) {
+        if (message.channel.type === "dm") {
+          message.author.send(response.message);
+        } else {
+          if (response.replaceRequest) {
+            message.delete();
+          }
+          message.channel.send(response.message);
+        }
+      }
+    });
   } catch(error) {
     log.error(error);
   }

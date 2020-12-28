@@ -26,85 +26,87 @@ describe("RollCommand", function() {
       });
     });
     it("does not handle message witout command", function() {
-      const message = { content: "1d10", author: "user" };
+      const message = { content: "1d10", author: { displayName: "user" } };
       const response = rollCommand.processMessage(message);
 
-      assert.strictEqual(response, false);
+      expect(response).to.be.undefined;
     });
     it("does not handle message with help command", function() {
       let reply = ""
-      const message = { content: "!roll help", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
+      const message = { content: "!roll help", author: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       const response = rollCommand.processMessage(message);
 
-      assert.strictEqual(response, false);
-      expect(reply).to.contains("Usage: !roll xdx");
+      expect(response.replaceRequest).to.be.false;
+      expect(response.message).to.contains("Usage: !roll xdx");
     });
     it("reply to private message", function() {
       let reply = "";
       let directReply = "";
       stubRolls = [4];
-      const message = { content: "!roll 1d10", member: { displayName: "user" } };
+      const message = { content: "!roll 1d10", author: { displayName: "user" } };
       message.channel = { type: "dm", send: function(msg){ reply = msg } };
       message.author = { send: function(msg) { directReply = msg } };
       const response = rollCommand.processMessage(message);
 
-      assert.strictEqual(response, true);
-      expect(reply).equals("");
-      expect(directReply).equals("You roll 1d10: [4] = **4**");
+      expect(response.replaceRequest).to.be.true;
+      expect(response.message).equals("You roll 1d10: [4] = **4**");
     });
     it("handles message with command", function() {
       let reply = ""
       stubRolls = [4];
-      const message = { content: "!roll 1d10", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
+      const message = { content: "!roll 1d10", author: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       const response = rollCommand.processMessage(message);
 
-      assert.strictEqual(response, true);
-      expect(reply).equals("user rolls 1d10: [4] = **4**");
+      expect(response.replaceRequest).to.be.true;
+      expect(response.message).equals("user rolls 1d10: [4] = **4**");
     });
     it("handles complex message with command", function() {
-      let reply = ""
       stubRolls = [1, 2, 3];
-      const message = { content: "!roll 1d10 + 2d6 + 2", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
+      const message = { content: "!roll 1d10 + 2d6 + 2", author: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       const response = rollCommand.processMessage(message);
 
-      assert.strictEqual(response, true);
-      expect(reply).equals("user rolls 1d10 + 2d6 + 2: [1][2,3][2] = **8**");
+      expect(response.replaceRequest).to.be.true;
+      expect(response.message).equals("user rolls 1d10 + 2d6 + 2: [1][2,3][2] = **8**");
     });
     it("No argument repeats last command", function() {
-      let reply1 = ""
-      let reply2 = ""
       stubRolls = [1, 2];
-      const message1 = { content: "!roll 1d6", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
-      const message2 = { content: "!roll", member: { displayName: "user" , id: "1"}, channel: { send: function(msg){ reply2 = msg } } };
+      const message1 = { content: "!roll 1d6", author: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message2 = { content: "!roll", author: { displayName: "user" , id: "1"}, channel: { send: function(msg){ reply2 = msg } } };
 
-      expect(rollCommand.processMessage(message1)).to.be.true;
-      expect(rollCommand.processMessage(message2)).to.be.true;
-      expect(reply1).equals("user rolls 1d6: [1] = **1**");
-      expect(reply2).equals("user rolls 1d6: [2] = **2**");
+      let reply1  = rollCommand.processMessage(message1);
+      let reply2  = rollCommand.processMessage(message2);
+
+      expect(reply1.replaceRequest).to.be.true;
+      expect(reply2.replaceRequest).to.be.true;
+      expect(reply1.message).equals("user rolls 1d6: [1] = **1**");
+      expect(reply2.message).equals("user rolls 1d6: [2] = **2**");
     });
     it("No argument repeat is user specific last command", function() {
-      let reply1 = ""
-      let reply2 = ""
-      let reply3 = ""
       stubRolls = [1, 2, 3];
-      const message1 = { content: "!roll 1d6", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
-      const message2 = { content: "!roll 1d8", member: { displayName: "other-user", id: "2" }, channel: { send: function(msg){ reply2 = msg } } };
-      const message3 = { content: "!roll", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply3 = msg } } };
+      const message1 = { content: "!roll 1d6", author: { displayName: "user", id: "1" }, channel: { } };
+      const message2 = { content: "!roll 1d8", author: { displayName: "other-user", id: "2" }, channel: { } };
+      const message3 = { content: "!roll", author: { displayName: "user", id: "1" }, channel: { } };
 
-      expect(rollCommand.processMessage(message1)).to.be.true;
-      expect(rollCommand.processMessage(message2)).to.be.true;
-      expect(rollCommand.processMessage(message3)).to.be.true;
-      expect(reply1).equals("user rolls 1d6: [1] = **1**");
-      expect(reply2).equals("other-user rolls 1d8: [2] = **2**");
-      expect(reply3).equals("user rolls 1d6: [3] = **3**");
+      let reply1 = rollCommand.processMessage(message1);
+      let reply2 = rollCommand.processMessage(message2);
+      let reply3 = rollCommand.processMessage(message3);
+
+      expect(reply1.replaceRequest).to.be.true;
+      expect(reply2.replaceRequest).to.be.true;
+      expect(reply3.replaceRequest).to.be.true;
+      expect(reply1.message).equals("user rolls 1d6: [1] = **1**");
+      expect(reply2.message).equals("other-user rolls 1d8: [2] = **2**");
+      expect(reply3.message).equals("user rolls 1d6: [3] = **3**");
     });
     it("No argument with no history returns help command", function() {
       let reply1 = ""
       stubRolls = [1, 2, 3];
-      const message1 = { content: "!roll", member: { displayName: "user", id: "1" }, channel: { send: function(msg){ reply1 = msg } } };
+      const message1 = { content: "!roll", author: { displayName: "user", id: "1" }, channel: {}};
 
-      expect(rollCommand.processMessage(message1)).to.be.true;
-      expect(reply1).to.contains("Usage: !roll xdx");
+      let reply = rollCommand.processMessage(message1);
+
+      expect(reply.replaceRequest).to.be.true;
+      expect(reply.message).to.contains("Usage: !roll xdx");
     });
   });
 });

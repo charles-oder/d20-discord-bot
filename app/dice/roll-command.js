@@ -15,16 +15,16 @@ function createHelpMessage() {
 }
 
 function processMessage(message) {
-  if (!message.content.startsWith(prefix)) return false;
+  if (!message.content.startsWith(prefix)) return undefined;
   log.debug(`Channel(${message.channel.type}): ${message.channel.id}`);
-  let send = message.channel.type === "dm" ? message.author.send : message.channel.send;
   log.debug("Message: " + message.content);
   if (message.content.includes("help")) {
-    send(createHelpMessage());
-    return false;
+    return { message: createHelpMessage(), replaceRequest: false };
   }
-  const author = message.member.displayName;
-  const authorId = message.member.id;
+  log.debug("Member:" + JSON.stringify(message.member));
+  log.debug("Author:" + JSON.stringify(message.author));
+  const author = message.member ? message.member.displayName : message.author.displayName;
+  const authorId = message.author.id;
   log.debug(`User: ${author} (${authorId})`);
   const userData = docManager.loadDocument(authorId);
   log.debug("User Data: " + JSON.stringify(userData));
@@ -35,8 +35,7 @@ function processMessage(message) {
   }
   if (!body) {
     log.debug("No body provided, showing help");
-    message.channel.send(createHelpMessage());
-    return true;
+    return { message: createHelpMessage(), replaceRequest: true };
   }
   log.debug("body: " + body);
   const tokens = diceRoller.tokenize(body);
@@ -66,8 +65,7 @@ function processMessage(message) {
     ? `You roll ${body}: ${rollOutput}`
     : `${author} rolls ${body}: ${rollOutput}`;
     
-  send(response);
-  return true;
+  return { message: response, replaceRequest: true };
 }
 
 module.exports.processMessage = processMessage;
