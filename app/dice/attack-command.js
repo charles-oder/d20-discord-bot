@@ -52,10 +52,11 @@ function extractFumbleRange(args) {
 
 function processMessage(message) {
   if (!message.content.startsWith(prefix)) return false;
-  log.debug("Channel: " + message.channel.id)
+  log.debug(`Channel(${message.channel.type}): ${message.channel.id}`);
   log.debug("Message: " + message.content);
+  let send = message.channel.type === "dm" ? message.author.send : message.channel.send;
   if (message.content.includes("help")) {
-    message.channel.send(createHelpMessage());
+    send(createHelpMessage());
     return false;
   }
   const author = message.member.displayName;
@@ -85,12 +86,13 @@ function processMessage(message) {
   log.debug("Fumble Threat: " + fumbleThreat);
   let total = 0;
   let response = "";
+  let authorString = message.channel.type === "dm" ? "You attack!" : `${author} attacks!`;
   attacks.forEach(attackBonus => {
     const naturalRoll = diceRoller.rollString("d20");
     const modifier = parseInt(attackBonus);
     const modifiedRoll = naturalRoll + modifier;
     resultSets.push(modifiedRoll);
-    response += `${author} attacks! Roll: ${naturalRoll} + ${modifier}`;
+    response += `${authorString} Roll: ${naturalRoll} + ${modifier}`;
     response += ` = **${modifiedRoll}**`;
     if (naturalRoll >= critThreat) {
       const backupRoll = diceRoller.rollString("d20");
@@ -108,7 +110,7 @@ function processMessage(message) {
   log.debug("Setting history for " + authorId + ": " + body);
   userData.lastAttack = body;
   docManager.saveDocument(authorId, userData);
-  message.channel.send(response);
+  send(response);
   return true;
 }
 

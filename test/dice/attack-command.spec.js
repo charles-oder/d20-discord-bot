@@ -33,6 +33,7 @@ describe("AttackCommand", function() {
       assert.strictEqual(response, false);
     });
     it("help command", function() {
+      let reply = "";
       const message = { content: "!attack help", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       const response = attackCommand.processMessage(message);
 
@@ -40,6 +41,7 @@ describe("AttackCommand", function() {
       expect(reply).to.contains("Usage: !attack +x/+x... [options]");
     });
     it("single attack", function() {
+      let reply = "";
       const message = { content: "!attack +1", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       stubRolls = [15];
       const response = attackCommand.processMessage(message);
@@ -47,7 +49,21 @@ describe("AttackCommand", function() {
       assert.strictEqual(response, true);
       expect(reply).to.equals("user attacks! Roll: 15 + 1 = **16**\n");
     });
+    it("Reply to DM", function() {
+      let reply = "";
+      let dmReply = "";
+      const message = { content: "!attack +1", member: { displayName: "user" } };
+      message.channel = { type: "dm", send: function(msg){ reply = msg } };
+      message.author = { send: function(msg){ dmReply = msg } }
+      stubRolls = [15];
+      const response = attackCommand.processMessage(message);
+
+      assert.strictEqual(response, true);
+      expect(reply).to.equals("");
+      expect(dmReply).to.equals("You attack! Roll: 15 + 1 = **16**\n");
+    });
     it("full attack", function() {
+      let reply = "";
       const message = { content: "!attack +6/+6/+1/+1", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       stubRolls = [10, 11, 12, 13]
       const response = attackCommand.processMessage(message);
@@ -60,6 +76,7 @@ describe("AttackCommand", function() {
       expect(reply).to.equals(expected);
     });
     it("full with natural 20 crit threat", function() {
+      let reply = "";
       const message = { content: "!attack +6/+1", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       stubRolls = [10, 20, 12]
       const response = attackCommand.processMessage(message);
@@ -70,6 +87,7 @@ describe("AttackCommand", function() {
       expect(reply).to.equals(expected);
     });
     it("full with natural 1 fumble threat", function() {
+      let reply = "";
       const message = { content: "!attack +6/+1", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       stubRolls = [10, 1, 12]
       const response = attackCommand.processMessage(message);
@@ -80,6 +98,7 @@ describe("AttackCommand", function() {
       expect(reply).to.equals(expected);
     });
     it("full with natural 19 crit threat", function() {
+      let reply = "";
       const message = { content: "!attack +6/+1 crit:19", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       stubRolls = [10, 19, 12]
       const response = attackCommand.processMessage(message);
@@ -90,6 +109,7 @@ describe("AttackCommand", function() {
       expect(reply).to.equals(expected);
     });
     it("full with fumble disabled", function() {
+      let reply = "";
       const message = { content: "!attack +6/+1 fumble:0", member: { displayName: "user" }, channel: { send: function(msg){ reply = msg } } };
       stubRolls = [10, 1]
       const response = attackCommand.processMessage(message);

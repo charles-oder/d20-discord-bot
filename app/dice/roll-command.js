@@ -16,10 +16,11 @@ function createHelpMessage() {
 
 function processMessage(message) {
   if (!message.content.startsWith(prefix)) return false;
-  log.debug("Channel: " + message.channel.id)
+  log.debug(`Channel(${message.channel.type}): ${message.channel.id}`);
+  let send = message.channel.type === "dm" ? message.author.send : message.channel.send;
   log.debug("Message: " + message.content);
   if (message.content.includes("help")) {
-    message.channel.send(createHelpMessage());
+    send(createHelpMessage());
     return false;
   }
   const author = message.member.displayName;
@@ -53,15 +54,19 @@ function processMessage(message) {
     });
     resultSets.push(results);
   });
-  let response = `${author} rolls ${body}: `;
+  let rollOutput = "";
   resultSets.forEach(set => {
-    response += JSON.stringify(set);
+    rollOutput += JSON.stringify(set);
   });
-  response += ` = **${total}**`;
+  rollOutput += ` = **${total}**`;
   log.debug("Setting history for " + authorId + ": " + body);
   userData.lastRoll = body;
   docManager.saveDocument(authorId, userData);
-  message.channel.send(response);
+  let response = message.channel.type === "dm"
+    ? `You roll ${body}: ${rollOutput}`
+    : `${author} rolls ${body}: ${rollOutput}`;
+    
+  send(response);
   return true;
 }
 

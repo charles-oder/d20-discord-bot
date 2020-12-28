@@ -39,6 +39,19 @@ describe("RollCommand", function() {
       assert.strictEqual(response, false);
       expect(reply).to.contains("Usage: !roll xdx");
     });
+    it("reply to private message", function() {
+      let reply = "";
+      let directReply = "";
+      stubRolls = [4];
+      const message = { content: "!roll 1d10", member: { displayName: "user" } };
+      message.channel = { type: "dm", send: function(msg){ reply = msg } };
+      message.author = { send: function(msg) { directReply = msg } };
+      const response = rollCommand.processMessage(message);
+
+      assert.strictEqual(response, true);
+      expect(reply).equals("");
+      expect(directReply).equals("You roll 1d10: [4] = **4**");
+    });
     it("handles message with command", function() {
       let reply = ""
       stubRolls = [4];
